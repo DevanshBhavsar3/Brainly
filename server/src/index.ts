@@ -1,14 +1,14 @@
-import express, { Request, Response } from "express";
-import z from "zod";
-import dotenv from "dotenv";
-import { Content, Link, User } from "./db";
-import mongoose from "mongoose";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import crypto from "node:crypto";
 import cookieParser from "cookie-parser";
+import express from "express";
+import jwt from "jsonwebtoken";
+import mongoose, { mongo } from "mongoose";
+import z from "zod";
 import { JWT_SECRET } from "./config";
+import { Content, Link, Tag, User } from "./db";
 import { authMiddleware } from "./middleware";
-import { contentTypesEnum, RequestWithUserId } from "./type";
+import { contentTypesEnum } from "./type";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -116,126 +116,146 @@ app.post("/api/v1/signin", async (req, res) => {
   }
 });
 
-app.post(
-  "/api/v1/content",
-  authMiddleware,
-  async (req: RequestWithUserId, res) => {
-    const contentBody = z.object({
-      type: z.string(),
-      link: z.string().url(),
-      title: z.string(),
-      tags: z.array(z.string()),
+app.post("/api/v1/content", authMiddleware, async (req, res) => {
+  const contentBody = z.object({
+    type: z.nativeEnum(contentTypesEnum),
+    link: z.string().url(),
+    title: z.string(),
+    tags: z.array(z.string()),
+  });
+
+  const { success, data } = contentBody.safeParse(req.body);
+  const userId = req.userId;
+
+  if (!success) {
+    res.status(411).json({ error: "Invalid content." });
+    return;
+  }
+
+  try {
+    const tagIds: mongoose.Types.ObjectId[] = [];
+
+    await Promise.all(
+      data.tags.map(async (title) => {
+        Tag.findOne({ title });
+        const tag = await Tag.findOne({ title });
+
+        if (!tag) {
+          const newTag = await Tag.create({ title });
+
+          tagIds.push(newTag._id);
+          return;
+        }
+
+        tagIds.push(tag._id);
+      })
+    );
+
+    await Content.create({
+      title: data.title,
+      type: data.type,
+      link: data.link,
+      tags: tagIds,
+      userId,
     });
 
-    const { error, success, data } = contentBody.safeParse(req.body);
-    const userId = req.userId;
+    res.status(200).json({ message: "Content added successfully." });
+  } catch (e) {
+    res.status(500).json({ error: "Internal server error." });
+  }
+});
 
-    if (!success) {
-      res.status(411).json({ error: "Invalid content." });
+app.get("/api/v1/content", authMiddleware, async (req, res) => {
+  const userId = req.userId;
+
+  const contents = await Content.find({ userId }).populate("tags");
+
+  res.status(200).json({ contents });
+});
+
+app.delete("/api/v1/content", authMiddleware, async (req, res) => {
+  const { id } = req.body;
+  const userId = req.userId;
+
+  try {
+    const content = await Content.findById(id);
+
+    if (!content) {
+      res.status(400).json({ error: "Content not found." });
       return;
     }
 
-    try {
-      await Content.create({
-        title: data.title,
-        type: data.type,
-        link: data.link,
-        tags: data.tags,
-        userId,
-      });
-
-      res.status(200).json({ message: "Content added successfully." });
-    } catch (e) {
-      res.status(500).json({ error: "Internal server error." });
+    if (content.userId.toString() !== userId) {
+      res.status(403).json({ error: "Unautorized operation." });
+      return;
     }
+
+    await Content.findByIdAndDelete(content._id);
+
+    res.status(200).json({ message: "Content deleted successly." });
+  } catch (e) {
+    res.status(500).json({ error: "Internal server error." });
   }
-);
+});
 
-app.get(
-  "/api/v1/content",
-  authMiddleware,
-  async (req: RequestWithUserId, res) => {
-    const userId = req.userId;
+app.post("/api/v1/brain/share", authMiddleware, async (req, res) => {
+  const { share }: { share: boolean } = req.body;
+  const userId = req.userId;
 
-    const contents = await Content.find({ userId });
-
-    res.status(200).json({ contents });
-  }
-);
-
-app.delete(
-  "/api/v1/content",
-  authMiddleware,
-  async (req: RequestWithUserId, res) => {
-    const { id } = req.body;
-    const userId = req.userId;
-
-    try {
-      const content = await Content.findById(id);
-
-      if (!content) {
-        res.status(400).json({ error: "Content not found." });
-        return;
-      }
-
-      if (content.userId.toString() !== userId) {
-        res.status(403).json({ error: "Unautorized operation." });
-        return;
-      }
-
-      await Content.findByIdAndDelete(content._id);
-
-      res.status(200).json({ message: "Content deleted successly." });
-    } catch (e) {
-      res.status(500).json({ error: "Internal server error." });
-    }
-  }
-);
-
-app.post(
-  "/api/v1/brain/share",
-  authMiddleware,
-  async (req: RequestWithUserId, res) => {
-    const { share }: { share: boolean } = req.body;
-    const userId = req.userId;
-
-    if (!userId) return;
+  try {
+    const existedLink = await Link.findOne({ userId });
 
     if (share) {
-      const hash = await bcrypt.hash(userId, 7);
+      if (existedLink) {
+        res.status(200).json({
+          link: `http://localhost:${PORT}/api/v1/brain/${existedLink.hash}`,
+        });
+        return;
+      }
 
-      Link.create({
+      const hash = crypto.createHash("sha256").update(userId).digest("hex");
+
+      await Link.create({
         hash,
         userId,
       });
 
-      res.json({ link: "http://localhost:2000/api/v1/brain/" + hash });
-      return;
+      res
+        .status(200)
+        .json({ link: `http://localhost:${PORT}/api/v1/brain/${hash}` });
     } else {
+      if (!existedLink) {
+        res
+          .status(400)
+          .json({ error: "Your second brain is already private." });
+        return;
+      }
+
+      await Link.deleteOne({ userId });
+
       res.status(200).json({ message: "Your second brain is now private." });
     }
+  } catch (e) {
+    res.status(500).json({ error: "Internal server error." });
   }
-);
+});
 
 app.post("/api/v1/brain/:shareLink", authMiddleware, async (req, res) => {
   const shareId = req.params.shareLink;
 
   try {
-    const link = await Link.findOne({ hash: shareId });
+    const link = await Link.findOne({ hash: shareId })
+      .populate<{ userId: typeof User.prototype }>("userId")
+      .exec();
 
     if (!link) {
       res.status(404).json({ error: "Sharelink doesn't exist or expired." });
       return;
     }
 
-    const contents = await Content.find({ userId: link.userId });
+    const contents = await Content.find({ userId: link.userId._id });
 
-    console.log(link);
-    console.log(contents);
-
-    res.status(200).json({
-      megs: "noice",
-    });
+    res.status(200).json({ username: link.userId.username, contents });
   } catch (e) {
     res.status(500).json({ error: "Internal server error." });
   }

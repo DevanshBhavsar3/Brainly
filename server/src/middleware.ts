@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "./config";
-import { RequestWithUserId } from "./type";
 
 export function authMiddleware(
-  req: RequestWithUserId,
+  req: Request,
   res: Response,
   next: NextFunction
 ) {

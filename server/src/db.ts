@@ -10,10 +10,10 @@ const contentSchema = new Schema({
   link: { type: String, required: true },
   type: { type: String, enum: contentTypesEnum, required: true },
   title: { type: String, required: true },
-  tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
+  tags: [{ type: Schema.Types.ObjectId, ref: "tag" }],
   userId: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: "user",
     required: true,
     validate: async (id: Types.ObjectId) => {
       const user = await User.findById(id);
@@ -33,7 +33,8 @@ const linkSchema = new Schema({
   hash: { type: String, required: true },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    required: true,
+    ref: "user",
   },
 });
 
