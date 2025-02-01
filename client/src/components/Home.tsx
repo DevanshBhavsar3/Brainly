@@ -3,7 +3,13 @@ import { Link } from "react-router-dom";
 function Home() {
   return (
     <main className="bg-black text-white flex flex-col items-center bg-radial font-primary">
-      <section className="py-32 md:py-64 max-w-7xl mx-auto flex flex-col justify-center items-center gap-2.5 px-5">
+      <section className="py-40 md:py-64 max-w-7xl mx-auto flex flex-col justify-center items-center gap-2.5 px-5">
+        <div className="absolute top-24 left-0 w-2/3 h-3 bg-red-400 blur-3xl rounded-full animate-blur transition-all"></div>
+        <div className="absolute top-1/4 right-0 w-1/2 h-3 bg-red-400 blur-xl rounded-full animate-blur transition-all"></div>
+        <div className="absolute bottom-1/3 left-0 w-1/4 h-3 bg-red-400 blur-xl rounded-full animate-blur transition-all"></div>
+        <div className="absolute bottom-1/4 right-0 w-1/2 h-3 bg-red-400 blur-xl rounded-full animate-blur transition-all"></div>
+        <div className="absolute bottom-10 left-0 w-2/3 h-3 bg-red-400 blur-xl rounded-full animate-blur transition-all"></div>
+
         <h1 className="text-6xl font-secondary relative text-center">
           Your external hard drive for thoughts.
         </h1>
@@ -22,18 +28,20 @@ function Home() {
         </button>
       </section>
 
-      <section className="my-10 max-w-7xl mx-auto flex flex-col w-full justify-between items-center gap-1 px-5">
+      <section className="my-20 max-w-7xl mx-auto flex flex-col w-full justify-between items-center gap-1 px-5 relative">
         <h1 className="text-md md:text-xl font-semibold text-center">
           Simple, intuitive, and powerful.
         </h1>
         <p className="text-center text-sm md:text-base">
           Capture your thoughts instantly, access them anytime.
         </p>
-        <div className="w-full bg-gray-500 rounded-xl border-4 border-primary my-5">
+
+        <div className="absolute top-10 w-full h-full bg-white/20 blur-2xl"></div>
+        <div className="z-10 w-full bg-gray-500 rounded-xl border-4 border-primary my-5 ">
           <img
             src="https://petal-estimate-4e9.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F085e8ad8-528e-47d7-8922-a23dc4016453%2F83737c59-0092-4a42-933b-0c6b658281a0%2FScreenshot_2024-11-16_at_5.29.15_PM.png?table=block&id=1407dfd1-0735-806d-830b-f76f9fab9859&spaceId=085e8ad8-528e-47d7-8922-a23dc4016453&width=1420&userId=&cache=v2"
             alt=""
-            className="rounded-lg"
+            className="z-10 rounded-lg"
           />
         </div>
       </section>

@@ -8,4 +8,17 @@
     --color-gray-500: #181818;
     --font-secondary: "Instrument Serif", serif;
     --font-primary: "Instrument Sans", serif;
+    --animate-blur: blur 3s ease-in-out infinite;
+
+    @keyframes blur {
+      0%,
+      100% {
+        filter: blur(32px);
+        opacity: 50%;
+      }
+      50% {
+        filter: blur(20px);
+        opacity: 90%;
+      }
+    }
 }
