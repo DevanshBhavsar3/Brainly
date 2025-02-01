@@ -23,10 +23,16 @@ function AuthForm({ endpoint }: AuthFormProps) {
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/${endpoint}`, {
-        username: data.username,
-        password: data.password,
-      });
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/${endpoint}`,
+        {
+          username: data.username,
+          password: data.password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
       navigate("/brain");
     } catch (e) {
