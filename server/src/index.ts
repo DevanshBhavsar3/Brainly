@@ -10,13 +10,19 @@ import { Content, Link, Tag, User } from "./db";
 import { authMiddleware } from "./middleware";
 import { contentTypesEnum } from "./type";
 import cors from "cors";
+import { title } from "node:process";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    credentials: true,
+  })
+);
 
 const requiredCredentials = z.object({
   username: z
@@ -170,9 +176,19 @@ app.post("/api/v1/content", authMiddleware, async (req, res) => {
 app.get("/api/v1/content", authMiddleware, async (req, res) => {
   const userId = req.userId;
 
-  const contents = await Content.find({ userId }).populate("tags");
+  const contents = await Content.find({ userId }).populate<{
+    tags: (typeof Tag.prototype)[];
+  }>("tags");
 
-  res.status(200).json({ contents });
+  const formattedContents = contents.map((content) => ({
+    id: content._id,
+    type: content.type,
+    link: content.link,
+    title: content.title,
+    tags: content.tags.map((tag) => tag.title),
+  }));
+
+  res.status(200).json({ contents: formattedContents });
 });
 
 app.delete("/api/v1/content", authMiddleware, async (req, res) => {
