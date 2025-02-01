@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import AuthForm from "./AuthForm";
 
 function Signup() {
   return (
@@ -18,33 +18,12 @@ function Signup() {
 
       <div className="outline-1 outline-white/10 h-full mx-10 hidden md:block" />
 
-      <form className="flex flex-col px-5 text-sm text-center w-full md:max-w-xs">
-        <h1 className="text-2xl font-bold my-5">Create your account</h1>
-
-        <input
-          type="text"
-          id="username"
-          className="py-2 px-4 outline-1 outline-white/20 rounded-md mb-5 bg-gray-500"
-          placeholder="Username"
-        />
-
-        <input
-          type="text"
-          id="password"
-          className="py-2 px-4 outline-1 outline-white/20 rounded-md mb-5 bg-gray-500"
-          placeholder="Password"
-        />
-
-        <button className="px-4 py-2 font-medium rounded-md bg-white text-black mb-5 cursor-pointer shadow-[0_0px_30px_rgba(0,0,0,0.25)] transition-all duration-500 hover:shadow-primary">
-          Create Account
-        </button>
-        <Link
-          to={"/login"}
-          className="px-8 py-2 cursor-pointer outline-1 outline-white/20 font-medium rounded-md"
-        >
-          I already have an account
-        </Link>
-      </form>
+      <div className="w-full md:w-sm">
+        <h1 className="text-2xl font-bold my-5 text-center">
+          Create your account
+        </h1>
+        <AuthForm endpoint="signup" />
+      </div>
     </div>
   );
 }
