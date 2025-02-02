@@ -1,5 +1,4 @@
-import { memo } from "react";
-import { ContentData } from "../types";
+import axios from "axios";
 import {
   Clapperboard,
   FileText,
@@ -8,7 +7,8 @@ import {
   Trash,
   Twitter,
 } from "lucide-react";
-import axios from "axios";
+import { memo } from "react";
+import { ContentData } from "../types";
 
 const Card = memo(
   ({ content, shared }: { content: ContentData; shared: boolean }) => {
@@ -43,11 +43,13 @@ const Card = memo(
     }
 
     return (
-      <div className="w-full h-fit bg-gray-700 border-2 border-white/10 px-4 py-2 rounded-md flex flex-col justify-between items-start gap-5">
-        <div className="w-full flex justify-between items-center gap-3">
-          <div className="flex justify-center items-center gap-3">
-            {getIcon()}
-            <p className="text-lg font-medium">{content.title}</p>
+      <div className="h-full bg-gray-700 border-2 border-white/10 px-4 py-2 rounded-md flex flex-col justify-start items-start gap-5">
+        <div className="w-full flex justify-between items-start gap-3">
+          <div className="flex justify-center items-start gap-3">
+            <p className="pt-1">{getIcon()}</p>
+            <p className="text-lg font-medium break-words line-clamp-3">
+              {content.title}
+            </p>
           </div>
           {!shared && (
             <div
@@ -59,9 +61,26 @@ const Card = memo(
           )}
         </div>
 
-        <a target="_blank" href={content.link}>
+        <a
+          target="_blank"
+          href={content.link}
+          className="break-all line-clamp-2"
+        >
           {content.link}
         </a>
+
+        {content.type === "Image" && (
+          <img src={content.link} alt="" className="rounded-md" />
+        )}
+
+        {content.type === "Video" && (
+          <iframe
+            src={`https://youtube.com/embed/${
+              content.link.split("https://youtu.be/")[1]
+            }`}
+            className="w-full rounded-md"
+          ></iframe>
+        )}
 
         <div className="flex flex-wrap gap-3">
           {content.tags.map((tag, index) => (

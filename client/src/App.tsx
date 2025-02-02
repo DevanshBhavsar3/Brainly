@@ -1,10 +1,9 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { RecoilRoot } from "recoil";
 import Home from "./components/Home";
-import Footer from "./components/Footer";
-import Signup from "./components/Signup";
 import Login from "./components/Login";
 import Notes from "./components/Notes";
+import Signup from "./components/Signup";
 
 function App() {
   return (
@@ -19,7 +18,6 @@ function App() {
             <Route path=":shareId" element={<Notes />} />
           </Route>
         </Routes>
-        <Footer />
       </BrowserRouter>
     </RecoilRoot>
   );

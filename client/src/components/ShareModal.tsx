@@ -18,6 +18,7 @@ function ShareModal() {
       );
 
       navigator.clipboard.writeText(response.data.link);
+      setIsModalOpen(!isModalOpen);
     } catch (e) {
       console.log(e);
     }
@@ -34,8 +35,8 @@ function ShareModal() {
       </button>
       {isModalOpen && (
         <div className="fixed top-0 left-0 w-screen h-screen bg-black/60 flex justify-center items-center">
-          <div className="bg-gray-700 w-1/3 px-4 py-4 rounded-md border-2 border-white/10 flex flex-col justify-center">
-            <div className="flex w-full justify-between items-center mb-3">
+          <div className="bg-gray-700 mx-5 px-4 py-4 rounded-md border-2 border-white/10 flex flex-col justify-center">
+            <div className="flex w-full justify-between items-start mb-3">
               <h1 className="text-2xl font-bold">Share your second brain</h1>
 
               <button
@@ -45,7 +46,7 @@ function ShareModal() {
                 <CircleX />
               </button>
             </div>
-            <p className="text-gray-300">
+            <p className="text-gray-300 max-w-md">
               Share your entire collection of notes, documents, tweets, and
               videos with others . They'll be able to import your content into
               their own Brainly account.

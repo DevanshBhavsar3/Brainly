@@ -34,6 +34,7 @@ function AuthForm({ endpoint }: AuthFormProps) {
         }
       );
 
+      localStorage.setItem("isLoggedIn", "true");
       navigate("/brain");
     } catch (e) {
       if (e instanceof AxiosError) {

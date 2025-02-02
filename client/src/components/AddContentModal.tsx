@@ -1,8 +1,16 @@
-import { CircleX, Plus, X } from "lucide-react";
-import { ReactElement, useState } from "react";
-import { Clapperboard, FileText, Image, Link2, Twitter } from "lucide-react";
-import { SubmitHandler, useForm, UseFormRegister } from "react-hook-form";
 import axios, { AxiosError } from "axios";
+import {
+  CircleX,
+  Clapperboard,
+  FileText,
+  Image,
+  Link2,
+  Plus,
+  Twitter,
+  X,
+} from "lucide-react";
+import { ReactElement, useState } from "react";
+import { SubmitHandler, useForm, UseFormRegister } from "react-hook-form";
 
 interface EntryData {
   title: string;
@@ -62,7 +70,7 @@ function AddContentModal() {
 
       {isModalOpen && (
         <div className="fixed top-0 left-0 w-screen h-screen bg-black/60 flex justify-center items-center">
-          <div className="bg-gray-700 w-fit px-4 py-4 rounded-md border-2 border-white/10">
+          <div className="bg-gray-700 mx-5 px-4 py-4 rounded-md border-2 border-white/10">
             <div className="flex w-full justify-between items-center mb-5">
               <h1 className="text-2xl font-bold">Create new entry</h1>
 
@@ -116,7 +124,7 @@ function AddContentModal() {
                   </div>
                 ))}
               </div>
-              <div className="flex items-center gap-2 mt-1 mb-5">
+              <div className="flex flex-col sm:flex-row justify-start items-start gap-2 mt-1 mb-5">
                 <input
                   type="text"
                   className="py-1 px-4 outline-1 outline-white/20 rounded-full bg-gray-500 text-sm"

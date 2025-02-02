@@ -15,20 +15,35 @@ function Navbar() {
           Brainly
         </Link>
         <div className="flex text-md justify-center items-center gap-5">
-          <Link
-            to={"/login"}
-            className="hidden md:block text-gray-200 hover:text-white transition-all duration-200"
-          >
-            Login
-          </Link>
-          <button>
-            <Link
-              to={"/signup"}
-              className="hidden md:block bg-primary hover:bg-primary-dark px-4 py-2 rounded-full"
-            >
-              Signup
-            </Link>
-          </button>
+          {localStorage.getItem("isLoggedIn") ? (
+            <>
+              <button>
+                <Link
+                  to={"/brain"}
+                  className="hidden md:block bg-primary hover:bg-primary-dark px-4 py-2 rounded-full"
+                >
+                  Go to brain
+                </Link>
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to={"/login"}
+                className="hidden md:block text-gray-200 hover:text-white transition-all duration-200"
+              >
+                Login
+              </Link>
+              <button>
+                <Link
+                  to={"/signup"}
+                  className="hidden md:block bg-primary hover:bg-primary-dark px-4 py-2 rounded-full"
+                >
+                  Signup
+                </Link>
+              </button>
+            </>
+          )}
           <button
             className="md:hidden cursor-pointer"
             onClick={() => setMenubarVisibility(!menubarVisibility)}
@@ -38,18 +53,26 @@ function Navbar() {
         </div>
       </div>
       <div
-        className={`my-5 flex-col justify-center items-start gap-5 text-gray-200 transition-all  ${
+        className={`my-5 flex-col justify-center items-start gap-5 text-gray-200 transition-all md:hidden  ${
           menubarVisibility ? "flex" : "hidden"
         }`}
       >
-        <Link to={"/login"} className="hover:text-white">
-          Login
-        </Link>
-        <button>
-          <Link to={"/signup"} className="hover:text-white">
-            Signup
-          </Link>
-        </button>
+        {localStorage.getItem("isLoggedIn") ? (
+          <>
+            <Link to={"/brain"} className="hover:text-white">
+              Go to brain
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link to={"/login"} className="hover:text-white">
+              Login
+            </Link>
+            <Link to={"/signup"} className="hover:text-white">
+              Signup
+            </Link>
+          </>
+        )}
       </div>
     </nav>
   );

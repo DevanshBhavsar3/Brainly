@@ -3,14 +3,13 @@ import crypto from "node:crypto";
 import cookieParser from "cookie-parser";
 import express from "express";
 import jwt from "jsonwebtoken";
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import z from "zod";
 import { JWT_SECRET } from "./config";
 import { Content, Link, Tag, User } from "./db";
 import { authMiddleware } from "./middleware";
 import { contentTypesEnum } from "./type";
 import cors from "cors";
-import { title } from "node:process";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -141,21 +140,21 @@ app.post("/api/v1/content", authMiddleware, async (req, res) => {
   }
 
   try {
-    const tagIds: mongoose.Types.ObjectId[] = [];
+    const tagIds: string[] = [];
 
     await Promise.all(
       data.tags.map(async (title) => {
-        Tag.findOne({ title });
         const tag = await Tag.findOne({ title });
 
         if (!tag) {
           const newTag = await Tag.create({ title });
 
-          tagIds.push(newTag._id);
+          tagIds.push(newTag._id.toString());
           return;
         }
 
-        tagIds.push(tag._id);
+        if (tagIds.includes(tag._id.toString())) return;
+        tagIds.push(tag._id.toString());
       })
     );
 
@@ -196,7 +195,7 @@ app.delete("/api/v1/content", authMiddleware, async (req, res) => {
   const userId = req.userId;
 
   try {
-    const content = await Content.findById(id);
+    const content = await Content.findOne({ _id: id });
 
     if (!content) {
       res.status(400).json({ error: "Content not found." });
@@ -226,7 +225,7 @@ app.post("/api/v1/brain/share", authMiddleware, async (req, res) => {
     if (share) {
       if (existedLink) {
         res.status(200).json({
-          link: `http://localhost:${PORT}/api/v1/brain/${existedLink.hash}`,
+          link: `${process.env.FRONTEND_URL}/brain/${existedLink.hash}`,
         });
         return;
       }
@@ -240,7 +239,7 @@ app.post("/api/v1/brain/share", authMiddleware, async (req, res) => {
 
       res
         .status(200)
-        .json({ link: `http://localhost:${PORT}/api/v1/brain/${hash}` });
+        .json({ link: `${process.env.FRONTEND_URL}/brain/${hash}` });
     } else {
       if (!existedLink) {
         res
@@ -271,9 +270,21 @@ app.post("/api/v1/brain/:shareLink", authMiddleware, async (req, res) => {
       return;
     }
 
-    const contents = await Content.find({ userId: link.userId._id });
+    const contents = await Content.find({ userId: link.userId._id }).populate<{
+      tags: (typeof Tag.prototype)[];
+    }>("tags");
 
-    res.status(200).json({ username: link.userId.username, contents });
+    const formattedContents = contents.map((content) => ({
+      id: content._id,
+      type: content.type,
+      link: content.link,
+      title: content.title,
+      tags: content.tags.map((tag) => tag.title),
+    }));
+
+    res
+      .status(200)
+      .json({ username: link.userId.username, contents: formattedContents });
   } catch (e) {
     res.status(500).json({ error: "Internal server error." });
   }

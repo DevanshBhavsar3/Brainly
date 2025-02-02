@@ -19,7 +19,7 @@
       }
       50% {
         filter: blur(20px);
-        opacity: 90%;
+        opacity: 70%;
       }
     }
 }
