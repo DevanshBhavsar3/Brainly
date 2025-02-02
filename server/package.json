@@ -7,8 +7,10 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc -b",
     "start": "node dist/index.js",
+    "build": "rimraf dist && tsc",
+    "ts.check": "tsc --project tsconfig.json",
+    "add-build": "git add dist",
     "dev": "npm run build && npm run start"
   },
   "dependencies": {
@@ -27,6 +29,13 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.8",
+    "pre-commit": "^1.2.2",
+    "rimraf": "^6.0.1",
     "typescript": "^5.7.3"
-  }
+  },
+  "pre-commit": [
+    "ts.check",
+    "build",
+    "add-build"
+  ]
 }
