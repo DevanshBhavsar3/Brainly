@@ -7,9 +7,9 @@ export interface ContentData {
 }
 
 export enum contentTypesEnum {
-  Image = "image",
-  Video = "video",
-  Tweet = "tweet",
-  Documnet = "document",
-  Link = "link",
+  Image = "Image",
+  Video = "Video",
+  Tweet = "Tweet",
+  Documnet = "Document",
+  Link = "Link",
 }

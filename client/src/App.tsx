@@ -14,7 +14,10 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/brain" element={<Notes />} />
+          <Route path="/brain">
+            <Route index element={<Notes />} />
+            <Route path=":shareId" element={<Notes />} />
+          </Route>
         </Routes>
         <Footer />
       </BrowserRouter>

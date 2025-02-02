@@ -1,9 +1,9 @@
 import axios from "axios";
-import { atom, selector } from "recoil";
+import { atom, selector, selectorFamily } from "recoil";
 import { ContentData } from "../../types";
 
-export const contentAtom = atom<{ contents: ContentData[] }>({
-  key: "contenAtom",
+export const contentAtom = atom<ContentData[]>({
+  key: "contentAtom",
   default: selector({
     key: "contentSelector",
     get: async () => {
@@ -17,4 +17,17 @@ export const contentAtom = atom<{ contents: ContentData[] }>({
       return response.data;
     },
   }),
+});
+
+export const sharedContentSelector = selectorFamily({
+  key: "sharedContentSelector",
+  get: (shareID: string) => async () => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/brain/${shareID}`,
+      {},
+      { withCredentials: true }
+    );
+
+    return response.data;
+  },
 });
