@@ -18,7 +18,11 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [
+      "https://brainly-sigma.vercel.app/",
+      "https://brainly-devanshs-projects-42de0e47.vercel.app/",
+      "https://brainly-git-main-devanshs-projects-42de0e47.vercel.app/",
+    ],
     credentials: true,
   })
 );
