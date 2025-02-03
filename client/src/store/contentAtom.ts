@@ -12,7 +12,7 @@ export const contentAtom = atomFamily({
     get: (id: string | null) => async () => {
       if (!id) {
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/content/`,
+          `${import.meta.env.VITE_BACKEND_URL}/content`,
           {
             withCredentials: true,
           }
