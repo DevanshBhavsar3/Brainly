@@ -85,6 +85,7 @@ app.post("/api/v1/signup", async (req, res) => {
     );
 
     res.cookie("token", token, {
+      sameSite: "none",
       secure: true,
       httpOnly: true,
     });
@@ -123,7 +124,11 @@ app.post("/api/v1/signin", async (req, res) => {
       JWT_SECRET
     );
 
-    res.cookie("token", token, { secure: true, httpOnly: true });
+    res.cookie("token", token, {
+      sameSite: "none",
+      secure: true,
+      httpOnly: true,
+    });
 
     res.status(200).json({ message: "Signed In successfully." });
   } catch (e) {
