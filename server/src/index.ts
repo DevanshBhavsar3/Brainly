@@ -23,6 +23,7 @@ app.use(
       "https://brainly-devanshs-projects-42de0e47.vercel.app",
       "https://brainly-git-main-devanshs-projects-42de0e47.vercel.app",
     ],
+    methods: ["GET", "POST", "DELETE", "OPTIONS"],
     credentials: true,
   })
 );
@@ -83,7 +84,10 @@ app.post("/api/v1/signup", async (req, res) => {
       JWT_SECRET
     );
 
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      secure: true,
+      httpOnly: true,
+    });
 
     res.status(200).json({ message: "Signed Up successfully." });
   } catch (e) {
@@ -119,7 +123,7 @@ app.post("/api/v1/signin", async (req, res) => {
       JWT_SECRET
     );
 
-    res.cookie("token", token);
+    res.cookie("token", token, { secure: true, httpOnly: true });
 
     res.status(200).json({ message: "Signed In successfully." });
   } catch (e) {
