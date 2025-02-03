@@ -6,14 +6,8 @@ function Home() {
   return (
     <>
       <Navbar />
-      <main className="bg-black text-white flex flex-col items-center bg-radial font-primary">
+      <main className="bg-black text-white flex flex-col items-center font-primary bg-gradient-to-tr from-primary/30 from-0% via-black via-50% to-primary/30 to-100%">
         <section className="py-40 md:py-64 max-w-7xl mx-auto flex flex-col justify-center items-center gap-2.5 px-5">
-          <div className="absolute top-24 left-0 w-2/3 h-2 bg-red-400 blur-3xl rounded-full animate-blur transition-all"></div>
-          <div className="absolute top-1/4 right-0 w-1/2 h-3 bg-red-400 blur-3xl rounded-full animate-blur transition-all"></div>
-          <div className="absolute bottom-1/3 left-0 w-1/4 h-2 bg-red-400 blur-3xl rounded-full animate-blur transition-all"></div>
-          <div className="absolute bottom-1/4 right-0 w-1/2 h-1 bg-red-400 blur-3xl rounded-full animate-blur transition-all"></div>
-          <div className="absolute bottom-10 left-0 w-2/3 h-2 bg-red-400 blur-3xl rounded-full animate-blur transition-all"></div>
-
           <h1 className="text-6xl font-secondary relative text-center">
             Your external hard drive for thoughts.
           </h1>

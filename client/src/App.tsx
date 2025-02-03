@@ -4,6 +4,7 @@ import Home from "./components/Home";
 import Login from "./components/Login";
 import Notes from "./components/Notes";
 import Signup from "./components/Signup";
+import NotFound from "./components/NotFound";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route index element={<Notes />} />
             <Route path=":shareId" element={<Notes />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </RecoilRoot>
