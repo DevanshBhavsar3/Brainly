@@ -22,6 +22,7 @@ app.use(
       "https://brainly-sigma.vercel.app",
       "https://brainly-devanshs-projects-42de0e47.vercel.app",
       "https://brainly-git-main-devanshs-projects-42de0e47.vercel.app",
+      "http://localhost:5173",
     ],
     methods: ["GET", "POST", "DELETE", "OPTIONS"],
     credentials: true,
@@ -270,7 +271,7 @@ app.post("/api/v1/brain/share", authMiddleware, async (req, res) => {
   }
 });
 
-app.post("/api/v1/brain/:shareLink", authMiddleware, async (req, res) => {
+app.post("/api/v1/brain/:shareLink", async (req, res) => {
   const shareId = req.params.shareLink;
 
   try {
@@ -301,6 +302,12 @@ app.post("/api/v1/brain/:shareLink", authMiddleware, async (req, res) => {
   } catch (e) {
     res.status(500).json({ error: "Internal server error." });
   }
+});
+
+app.post("/api/v1/logout", (req, res) => {
+  res.clearCookie("token");
+
+  res.status(200).json({ message: "Logged out." });
 });
 
 async function main() {

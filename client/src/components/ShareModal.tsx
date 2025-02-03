@@ -56,7 +56,7 @@ function ShareModal() {
               onClick={handleCopyLink}
             >
               <Copy size={18} />
-              Share brain
+              Copy link
             </button>
           </div>
         </div>

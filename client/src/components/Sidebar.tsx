@@ -9,9 +9,10 @@ import {
   Twitter,
 } from "lucide-react";
 import { ReactElement } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { currentTabAtom } from "../store/contentAtom";
+import axios from "axios";
 
 function Sidebar({
   isVisible,
@@ -20,6 +21,7 @@ function Sidebar({
   isVisible: boolean;
   setIsVisible: (visibility: boolean) => void;
 }) {
+  const navigate = useNavigate();
   const tabs = [
     { title: "All", icon: <Layers size={18} /> },
     { title: "Image", icon: <Image size={18} /> },
@@ -28,6 +30,17 @@ function Sidebar({
     { title: "Document", icon: <FileText size={18} /> },
     { title: "Link", icon: <Link2 size={18} /> },
   ];
+
+  async function handleLogout() {
+    try {
+      axios.post(`${import.meta.env.VITE_BACKEND_URL}/logout`);
+      localStorage.removeItem("isLoggedIn");
+
+      navigate("/");
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   if (!isVisible) {
     return (
@@ -42,7 +55,7 @@ function Sidebar({
 
   return (
     <div
-      className={`fixed md:sticky top-0 w-full md:w-1/5 bg-gray-700 text-gray-200 h-screen px-4 py-2 border-r-2 border-r-white/10 transition-all`}
+      className={`fixed md:sticky top-0 w-full md:w-1/5 bg-gray-700 text-gray-200 h-screen px-4 py-2 border-r-2 border-r-white/10 transition-all flex flex-col`}
     >
       <h1 className="w-full text-lg font-semibold text-white cursor-pointer my-3 flex justify-between items-center">
         <Link to={"/"}>Brainly</Link>
@@ -53,12 +66,19 @@ function Sidebar({
           <ChevronLeft />
         </div>
       </h1>
-
-      <ul className="flex flex-col justify-center items-start gap-2 font-medium">
+      <ul className="flex flex-1 flex-col justify-start items-start gap-2 font-medium">
         {tabs.map((tab, index) => (
           <TabButton key={index} title={tab.title} icon={tab.icon} />
         ))}
       </ul>
+      {localStorage.getItem("isLoggedIn") && (
+        <button
+          className="w-full mt-auto px-2 py-1 cursor-pointer transition-all duration-200 rounded-md bg-primary/20 text-center text-sm hover:bg-primary hover:text-white"
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
+      )}
     </div>
   );
 }

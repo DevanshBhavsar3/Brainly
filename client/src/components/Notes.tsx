@@ -18,7 +18,7 @@ function Notes() {
   const [sidebarVisibility, setSidebarVisibility] = useState(true);
 
   useEffect(() => {
-    if (!localStorage.getItem("isLoggedIn")) {
+    if (!localStorage.getItem("isLoggedIn") && !params.shareId) {
       navigate("/");
     }
   }, []);
@@ -35,9 +35,11 @@ function Notes() {
             {contentsState.contents.username || "Your"} Notes
           </h1>
           {params.shareId ? (
-            <button className="cursor-pointer bg-primary/20 hover:bg-primary-dark border-2 border-primary transition-all duration-200 px-2 py-1 rounded-md text-sm font-medium flex justify-center items-center gap-2">
-              <Link to={"/brain"}>Your brain</Link>
-            </button>
+            localStorage.getItem("isLoggedIn") && (
+              <button className="cursor-pointer bg-primary/20 hover:bg-primary-dark border-2 border-primary transition-all duration-200 px-2 py-1 rounded-md text-sm font-medium flex justify-center items-center gap-2">
+                <Link to={"/brain"}>Your brain</Link>
+              </button>
+            )
           ) : (
             <div className="flex justify-center items-center gap-3">
               <ShareModal />

@@ -91,7 +91,7 @@ function AuthForm({ endpoint }: AuthFormProps) {
           },
           pattern: {
             value:
-              /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[_#@%\*\-])[A-Za-z0-9_#@%\*\-]{8,20}$/,
+              /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[_#@%!&\*\-])[A-Za-z0-9_#@%!&\*\-]{8,20}$/,
             message:
               "Password must atleast contain 1 Uppercase, Lowercase, Number & Special character.",
           },
