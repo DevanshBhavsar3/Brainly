@@ -78,8 +78,23 @@ const Card = memo(
             src={`https://youtube.com/embed/${
               content.link.split("https://youtu.be/")[1]
             }`}
-            className="w-full rounded-md"
+            className="w-full h-full rounded-md"
           ></iframe>
+        )}
+
+        {content.type === "Tweet" && (
+          <div className="hidden md:block ">
+            <blockquote
+              className="twitter-tweet w-full h-full"
+              style={{ margin: 0 }}
+            >
+              <a
+                href={`https://twitter.com/x/status/${
+                  content.link.split("/status/")[1]
+                }`}
+              ></a>
+            </blockquote>
+          </div>
         )}
 
         <div className="flex flex-wrap gap-3">
